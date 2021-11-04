@@ -1,7 +1,7 @@
 const Users = require('../models/userModel')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const cookie = require('cookie')
+
 
 const userCtrl = {
     register: async (req, res) => {
@@ -78,7 +78,7 @@ const userCtrl = {
     refreshToken: (req, res) => {
         try {
             const rf_token = req.cookies.refreshToken;
-            
+
             if(!rf_token) return res.status(400).json({msg: "Please Login or Register"})
 
             jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
@@ -93,7 +93,14 @@ const userCtrl = {
             return res.status(500).json({msg: err.message})
         }
         
-    }
+    }, 
+    getUser: async (req, res) => {
+        try {
+            res.json(req.user)
+        } catch (err) {
+            return res.status(500).json({msg: err.message})
+        }
+    } 
 }
 
 const createAccessToken = (user) =>{
